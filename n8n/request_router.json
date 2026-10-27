@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "fieldToSplitOut": "requests",
+        "fieldToSplitOut": "body.requests",
         "options": {}
       },
       "name": "Split requests",
