@@ -1,0 +1,73 @@
+{
+  "name": "Benefits request router",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "benefits-request",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook: new benefits requests",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "benefits-request-demo"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "requests",
+        "options": {}
+      },
+      "name": "Split requests",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const ROUTES = [[\"Leaver\", [\"last day\", \"leaving\", \"resign\", \"leaver\"], \"People Ops + Payroll\", 24], [\"Dependants and life events\", [\"spouse\", \"partner\", \"married\", \"baby\", \"dependant\"], \"Benefits (Total Rewards)\", 48], [\"Claims\", [\"claim\", \"rejected\", \"pre-approval\", \"reimburse\"], \"Insurer (broker escalation)\", 48], [\"Payroll deduction\", [\"payslip\", \"deduction\", \"salary\"], \"Payroll\", 24], [\"Enrolment and eligibility\", [\"eligible\", \"enrol\", \"join\", \"switch\", \"add\"], \"Benefits (Total Rewards)\", 72], [\"Pension\", [\"pension\"], \"Benefits (Total Rewards)\", 72], [\"Admin\", [\"card\", \"address\", \"document\"], \"Benefits (Total Rewards)\", 72]];\nreturn $input.all().map(item => {\n  const text = String(item.json.message || '').toLowerCase();\n  let category = 'Unclassified', owner = 'Benefits (Total Rewards): manual triage', sla_hours = 72;\n  for (const [c, kws, o, s] of ROUTES) {\n    if (kws.some(k => text.includes(k))) { category = c; owner = o; sla_hours = s; break; }\n  }\n  return { json: { request_id: item.json.request_id, employee_id: item.json.employee_id, category, owner, sla_hours, message: item.json.message } };\n});"
+      },
+      "name": "Classify and route",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook: new benefits requests": {
+      "main": [
+        [
+          {
+            "node": "Split requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split requests": {
+      "main": [
+        [
+          {
+            "node": "Classify and route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

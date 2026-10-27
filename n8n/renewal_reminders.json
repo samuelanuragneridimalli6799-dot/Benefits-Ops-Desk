@@ -1,0 +1,56 @@
+{
+  "name": "Benefits renewal reminders",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1,
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "name": "Every Monday 08:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const today = new Date();\nconst providers = [\n  { provider: 'NordCare Insurance', contract: 'Group health and dental', renewal: '2026-12-31' },\n  { provider: 'Baltic Pensions', contract: 'Pension match scheme', renewal: '2027-03-31' }\n];\nconst out = [];\nfor (const p of providers) {\n  const days = Math.ceil((new Date(p.renewal) - today) / 86400000);\n  if (days >= 0 && days <= 90) {\n    out.push({ json: { type: 'Renewal', provider: p.provider, days_left: days,\n      draft_message: `Renewal for ${p.contract} in ${days} days: request quote and confirm headcount.` } });\n  }\n}\nif (out.length === 0) out.push({ json: { type: 'None', draft_message: 'No renewals inside the window.' } });\nreturn out;"
+      },
+      "name": "Find renewals inside 90 days",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Every Monday 08:00": {
+      "main": [
+        [
+          {
+            "node": "Find renewals inside 90 days",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
