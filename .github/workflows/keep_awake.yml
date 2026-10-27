@@ -1,0 +1,29 @@
+name: keep-awake
+on:
+  schedule:
+    - cron: "0 */8 * * *"
+  workflow_dispatch:
+jobs:
+  visit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install playwright && playwright install --with-deps chromium
+      - name: Visit app
+        run: |
+          python - <<'EOF'
+          from playwright.sync_api import sync_playwright
+          URL = "https://samnerd-benefits-ops-desk.streamlit.app"
+          with sync_playwright() as p:
+              b = p.chromium.launch()
+              page = b.new_page()
+              page.goto(URL, timeout=90000)
+              page.wait_for_timeout(8000)
+              btn = page.get_by_text("get this app back up")
+              if btn.count():
+                  btn.first.click()
+                  page.wait_for_timeout(30000)
+              b.close()
+          EOF
