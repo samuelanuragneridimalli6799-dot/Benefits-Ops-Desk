@@ -1,0 +1,11 @@
+request_id,received,employee_id,message
+R200,2026-10-01,E1004,"I'm moving to Portugal next month, how do I update my address for the health plan?"
+R201,2026-10-02,E1011,When can I add my partner to Health Plus?
+R202,2026-10-03,E1019,"My last day is 31 October, what happens to my pension and insurance?"
+R203,2026-10-04,E1025,"I got married, I want to add my spouse as a dependant"
+R204,2026-10-05,E1031,"Please send me my insurance card, I lost it"
+R205,2026-10-06,E1040,The dentist rejected my claim and asked for pre-approval
+R206,2026-10-07,E1044,Is the pension match paid on bonus?
+R207,2026-10-08,E1052,"New joiner here, which benefits am I eligible for and by when must I enrol?"
+R208,2026-10-09,E1007,Can I switch from Dental Basic to Health Plus mid-year?
+R209,2026-10-10,E1015,I think my payslip shows the wrong benefits deduction
