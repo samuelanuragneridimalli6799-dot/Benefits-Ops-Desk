@@ -34,6 +34,16 @@ curl -X POST <your-n8n-webhook-url>/webhook/benefits-request \
 
 Expected category: `Leaver`.
 
+### Tested in n8n with sample payloads
+
+Router: a sample request "My last day is 31 October" is classified as Leaver (SLA 24h) and "When can I add my partner to Health Plus?" as Dependants and life events (SLA 48h).
+
+![Router output](docs/router-output.png)
+
+Reminders: the Monday workflow drafts a renewal reminder for NordCare Insurance with 65 days left.
+
+![Reminders output](docs/reminders-output.png)
+
 ## Run it
 
 ```bash
